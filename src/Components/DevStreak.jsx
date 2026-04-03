@@ -5,7 +5,8 @@ function DevStreak() {
     localStorage.getItem("lastCompleted") === moment().format("MMMM Do YYYY"),
   );
   const [streak, setStreak] = useState(0);
-  const [isBroken, setIsBroken] = useState(false);
+  const [isBroken, setIsBroken] = useState(false); //for Breaking streak
+  const [isContinuing, setIsContinuing] = useState(false); //for Continuing Streak
   const today = moment().format("MMMM Do YYYY");
   const handleTodaysDate = () => {
     let difference = null;
@@ -46,9 +47,13 @@ function DevStreak() {
       "days",
     );
 
-    if (difference > 1) setIsBroken(true);
-    else {
+    if (difference > 1) {
+      setIsBroken(true);
+      setIsContinuing(false);
+    } else {
       setIsBroken(false);
+      if (difference === 1 && !isCompleted) setIsContinuing(true);
+      else setIsContinuing(false);
     }
   }, []);
   return (
@@ -60,6 +65,7 @@ function DevStreak() {
       </button>
       <p>Streak: {streak} days</p>
       {isBroken && <p>Streak Broken</p>}
+      {isContinuing && <p>Continue Streak? 🔥🔥</p>}
     </div>
   );
 }
