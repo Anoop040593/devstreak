@@ -8,10 +8,18 @@ function DevStreak() {
   const [isBroken, setIsBroken] = useState(false); //for Breaking streak
   const [isContinuing, setIsContinuing] = useState(false); //for Continuing Streak
   const today = moment().format("MMMM Do YYYY");
+  const lastCompletedDate = localStorage.getItem("lastCompleted");
+  const days = Array.from({ length: 7 }).map((_, i) => {
+    const d = moment().subtract(i, "days").format("MMMM Do YYYY");
+    if (d === lastCompletedDate) {
+      return `${d}: ✅ `;
+    } else {
+      return `${d}: ❌ `;
+    }
+  });
   const handleTodaysDate = () => {
     let difference = null;
     let newStreak = 1;
-    const lastCompletedDate = localStorage.getItem("lastCompleted");
 
     const prevStreak = Number(localStorage.getItem("streakCount")) || 0;
     if (lastCompletedDate) {
@@ -35,6 +43,10 @@ function DevStreak() {
 
   useEffect(() => {
     const lastCompletedDate = localStorage.getItem("lastCompleted");
+    const difference = moment().diff(
+      moment(lastCompletedDate, "MMMM Do YYYY"),
+      "days",
+    );
     //We update the status here as well, so that even after page is refreshed data persists.
     const storedStreak = Number(localStorage.getItem("streakCount")) || 0;
     setStreak(storedStreak);
@@ -42,10 +54,6 @@ function DevStreak() {
       setIsBroken(false);
       return;
     }
-    const difference = moment().diff(
-      moment(lastCompletedDate, "MMMM Do YYYY"),
-      "days",
-    );
 
     if (difference > 1) {
       setIsBroken(true);
@@ -66,6 +74,9 @@ function DevStreak() {
       <p>Streak: {streak} days</p>
       {isBroken && <p>Streak Broken</p>}
       {isContinuing && <p>Continue Streak? 🔥🔥</p>}
+      {days.map((day, index) => (
+        <p key={index}>{day}</p>
+      ))}
     </div>
   );
 }

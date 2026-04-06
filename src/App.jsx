@@ -4,7 +4,10 @@ import viteLogo from "./assets/vite.svg";
 import heroImg from "./assets/hero.png";
 import "./App.css";
 import DevStreak from "./Components/DevStreak";
+
 function App() {
+  const [count, setCount] = useState(0);
+
   return (
     <>
       <DevStreak />
