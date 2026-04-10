@@ -8,18 +8,30 @@ function DevStreak() {
   const [isBroken, setIsBroken] = useState(false); //for Breaking streak
   const [isContinuing, setIsContinuing] = useState(false); //for Continuing Streak
   const today = moment().format("MMMM Do YYYY");
-  const lastCompletedDate = localStorage.getItem("lastCompleted");
+  const completedDates =
+    JSON.parse(localStorage.getItem("completedDates")) || [];
+  let updatedDates = [];
   const days = Array.from({ length: 7 }).map((_, i) => {
     const d = moment().subtract(i, "days").format("MMMM Do YYYY");
-    if (d === lastCompletedDate) {
+    if (completedDates.includes(d)) {
       return `${d}: ✅ `;
     } else {
       return `${d}: ❌ `;
     }
   });
   const handleTodaysDate = () => {
+    const lastCompletedDate = localStorage.getItem("lastCompleted");
+
     let difference = null;
     let newStreak = 1;
+    // for (let date in completedDates) {
+    //   if (date !== today) {
+    //     completedDates.push(today);
+    //   }
+    // }
+
+    if (!completedDates.includes(today))
+      updatedDates = [...completedDates, today];
 
     const prevStreak = Number(localStorage.getItem("streakCount")) || 0;
     if (lastCompletedDate) {
@@ -34,7 +46,7 @@ function DevStreak() {
     else {
       newStreak = 1;
     }
-
+    localStorage.setItem("completedDates", JSON.stringify(completedDates));
     localStorage.setItem("lastCompleted", today);
     localStorage.setItem("streakCount", newStreak);
     setIsCompleted(true);
