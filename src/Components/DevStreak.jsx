@@ -1,16 +1,16 @@
 import { useState, useEffect } from "react";
 import moment from "moment";
+
 function DevStreak() {
-  const [isCompleted, setIsCompleted] = useState(
-    localStorage.getItem("lastCompleted") === moment().format("MMMM Do YYYY"),
-  );
+  const [isCompleted, setIsCompleted] = useState(false);
   const [streak, setStreak] = useState(0);
   const [isBroken, setIsBroken] = useState(false); //for Breaking streak
   const [isContinuing, setIsContinuing] = useState(false); //for Continuing Streak
   const today = moment().format("MMMM Do YYYY");
   const completedDates =
     JSON.parse(localStorage.getItem("completedDates")) || [];
-  let updatedDates = [];
+  let updatedDates = completedDates;
+
   const days = Array.from({ length: 7 }).map((_, i) => {
     const d = moment().subtract(i, "days").format("MMMM Do YYYY");
     if (completedDates.includes(d)) {
@@ -19,9 +19,10 @@ function DevStreak() {
       return `${d}: ❌ `;
     }
   });
+
   const handleTodaysDate = () => {
     const lastCompletedDate = localStorage.getItem("lastCompleted");
-
+    const prevStreak = Number(localStorage.getItem("streakCount")) || 0;
     let difference = null;
     let newStreak = 1;
     // for (let date in completedDates) {
@@ -33,7 +34,6 @@ function DevStreak() {
     if (!completedDates.includes(today))
       updatedDates = [...completedDates, today];
 
-    const prevStreak = Number(localStorage.getItem("streakCount")) || 0;
     if (lastCompletedDate) {
       difference = moment().diff(
         moment(lastCompletedDate, "MMMM Do YYYY"),
@@ -46,7 +46,7 @@ function DevStreak() {
     else {
       newStreak = 1;
     }
-    localStorage.setItem("completedDates", JSON.stringify(completedDates));
+    localStorage.setItem("completedDates", JSON.stringify(updatedDates));
     localStorage.setItem("lastCompleted", today);
     localStorage.setItem("streakCount", newStreak);
     setIsCompleted(true);
@@ -55,6 +55,16 @@ function DevStreak() {
 
   useEffect(() => {
     const lastCompletedDate = localStorage.getItem("lastCompleted");
+    if (!lastCompletedDate) {
+      setIsBroken(false);
+      setIsContinuing(false);
+      return;
+    }
+
+    if (lastCompletedDate === today) {
+      setIsCompleted === true;
+    }
+
     const difference = moment().diff(
       moment(lastCompletedDate, "MMMM Do YYYY"),
       "days",
