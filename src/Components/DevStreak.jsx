@@ -9,7 +9,7 @@ function DevStreak() {
   const today = moment().format("MMMM Do YYYY");
   const completedDates =
     JSON.parse(localStorage.getItem("completedDates")) || [];
-  let updatedDates = completedDates;
+  let updatedDates = [...completedDates];
 
   const days = Array.from({ length: 7 }).map((_, i) => {
     const d = moment().subtract(i, "days").format("MMMM Do YYYY");
@@ -62,7 +62,7 @@ function DevStreak() {
     }
 
     if (lastCompletedDate === today) {
-      setIsCompleted === true;
+      setIsCompleted(true);
     }
 
     const difference = moment().diff(
@@ -72,17 +72,13 @@ function DevStreak() {
     //We update the status here as well, so that even after page is refreshed data persists.
     const storedStreak = Number(localStorage.getItem("streakCount")) || 0;
     setStreak(storedStreak);
-    if (!lastCompletedDate) {
-      setIsBroken(false);
-      return;
-    }
-
     if (difference > 1) {
       setIsBroken(true);
       setIsContinuing(false);
     } else {
       setIsBroken(false);
-      if (difference === 1 && !isCompleted) setIsContinuing(true);
+      if (difference === 1 && lastCompletedDate !== today)
+        setIsContinuing(true);
       else setIsContinuing(false);
     }
   }, []);
