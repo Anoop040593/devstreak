@@ -1,7 +1,7 @@
 import "./App.css";
 import { useEffect, useState } from "react";
 function App() {
-  const [message, setMessage] = useState("");
+  const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(false);
 
   async function fetchMessage() {
@@ -9,10 +9,13 @@ function App() {
       setLoading(true);
       const response = await fetch("http://localhost:3000/api/message");
       const messageData = await response.json();
-      setMessage(messageData.message);
+      setMessage((prev) => {
+        return [...prev, messageData.message];
+      });
       setLoading(false);
     } catch (err) {
       console.error("Error Occured", err);
+    } finally {
       setLoading(false);
     }
   }
@@ -25,7 +28,13 @@ function App() {
     <>
       <h1>DevStreak Dashboard</h1>
       <button onClick={fetchMessage}>Refresh Message</button>
-      <h3>{loading ? <span>Loading...</span> : message}</h3>
+      <h3>
+        {loading ? (
+          <span>Loading...</span>
+        ) : (
+          message.map((m, index) => <div key={index}>{m}</div>)
+        )}
+      </h3>
     </>
   );
 }
