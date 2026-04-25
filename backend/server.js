@@ -19,6 +19,7 @@ app.get("/api/message", (req, res) => {
   return res.status(200).json({
     success: true,
     message: "Received Response",
+    time: Date.now(),
   });
 });
 

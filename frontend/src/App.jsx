@@ -9,10 +9,10 @@ function App() {
       setLoading(true);
       const response = await fetch("http://localhost:3000/api/message");
       const messageData = await response.json();
+      const { message, time } = messageData;
       setMessage((prev) => {
-        return [...prev, messageData.message];
+        return [...prev, { message, time }];
       });
-      setLoading(false);
     } catch (err) {
       console.error("Error Occured", err);
     } finally {
@@ -32,7 +32,11 @@ function App() {
         {loading ? (
           <span>Loading...</span>
         ) : (
-          message.map((m, index) => <div key={index}>{m}</div>)
+          message.map((m, index) => (
+            <div key={index}>
+              {m.message}- {new Date(m.time).toLocaleTimeString()}
+            </div>
+          ))
         )}
       </h3>
     </>
