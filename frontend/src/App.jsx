@@ -52,6 +52,12 @@ function App() {
     });
   }
 
+  function deleteTask(index) {
+    setTasks((prev) => {
+      return prev.filter((_, i) => i !== index);
+    });
+  }
+
   useEffect(() => {
     fetchMessage();
   }, []);
@@ -83,6 +89,8 @@ function App() {
               onChange={() => toggleTask(index)}
             />
             <label htmlFor="completed"> Completed</label>
+            <input type="checkbox" onChange={() => deleteTask(index)} />
+            <label htmlFor="delete">Delete</label>
           </li>
         ))}
       </ul>
