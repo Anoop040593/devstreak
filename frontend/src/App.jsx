@@ -5,6 +5,7 @@ function App() {
   const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [inputValue, setInputValue] = useState("");
+  const [streakStatus, setStreakStatus] = useState(false);
 
   async function fetchMessage() {
     try {
@@ -68,6 +69,7 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
+    setStreakStatus(tasks.some((task) => task.completed));
   }, [tasks]);
 
   return (
@@ -114,6 +116,8 @@ function App() {
           ))
         )}
       </h3>
+
+      <h4>{streakStatus ? "🔥 Streak Active" : "No Active Streak"}</h4>
     </>
   );
 }
