@@ -6,6 +6,9 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [streakStatus, setStreakStatus] = useState(false);
+  const [totalTasks, setTotalTasks] = useState(0);
+  const [completedTasks, setCompletedTasks] = useState(0);
+  const [pendingTasks, setPendingTasks] = useState(0);
 
   async function fetchMessage() {
     try {
@@ -69,6 +72,9 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
+    setCompletedTasks(tasks.filter((task) => task.completed).length);
+    setPendingTasks(tasks.filter((task) => !task.completed).length);
+    setTotalTasks(tasks.length);
     setStreakStatus(tasks.some((task) => task.completed));
   }, [tasks]);
 
@@ -99,8 +105,12 @@ function App() {
               onChange={() => toggleTask(index)}
             />
             <label htmlFor="completed"> Completed</label>
-            <input type="checkbox" onChange={() => deleteTask(index)} />
-            <label htmlFor="delete">Delete</label>
+            <input
+              type="button"
+              onClick={() => deleteTask(index)}
+              value=" DELETE "
+              style={{ marginLeft: "5px" }}
+            />
           </li>
         ))}
       </ul>
@@ -116,7 +126,9 @@ function App() {
           ))
         )}
       </h3>
-
+      <h4>Total Tasks: {totalTasks}</h4>
+      <h4>Completed Tasks: {completedTasks}</h4>
+      <h4>Pending Tasks: {pendingTasks}</h4>
       <h4>{streakStatus ? "🔥 Streak Active" : "No Active Streak"}</h4>
     </>
   );
