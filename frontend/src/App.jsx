@@ -9,6 +9,8 @@ function App() {
   const [totalTasks, setTotalTasks] = useState(0);
   const [completedTasks, setCompletedTasks] = useState(0);
   const [pendingTasks, setPendingTasks] = useState(0);
+  const [editValue, setEditValue] = useState("");
+  const [editIndex, setEditIndex] = useState(null);
 
   async function fetchMessage() {
     try {
@@ -28,6 +30,10 @@ function App() {
 
   function handleTaskChange(e) {
     setInputValue(e.target.value);
+  }
+
+  function handleEditChange(e) {
+    setEditValue(e.target.value);
   }
 
   function addTask() {
@@ -60,6 +66,29 @@ function App() {
     setTasks((prev) => {
       return prev.filter((_, i) => i !== index);
     });
+  }
+
+  function editTaskFunc(index, task) {
+    if (editIndex !== index) {
+      console.log("EDITED");
+      setEditValue(task.text);
+      setEditIndex(index);
+    } else {
+      setTasks((prev) => {
+        return prev.map((task, i) => {
+          if (i === editIndex) {
+            return {
+              ...task,
+              text: editValue,
+            };
+          } else {
+            return task;
+          }
+        });
+      });
+      setEditIndex(null);
+      setEditValue("");
+    }
   }
 
   useEffect(() => {
@@ -97,7 +126,15 @@ function App() {
             <span
               style={{ textDecoration: t.completed ? "line-through" : "none" }}
             >
-              {t.text}{" "}
+              {index === editIndex ? (
+                <input
+                  type="text"
+                  value={editValue}
+                  onChange={handleEditChange}
+                />
+              ) : (
+                t.text
+              )}
             </span>
             <input
               type="checkbox"
@@ -105,6 +142,12 @@ function App() {
               onChange={() => toggleTask(index)}
             />
             <label htmlFor="completed"> Completed</label>
+            <input
+              type="button"
+              onClick={() => editTaskFunc(index, t)}
+              value={index === editIndex ? " SAVE " : " EDIT "}
+              style={{ marginLeft: "5px" }}
+            />
             <input
               type="button"
               onClick={() => deleteTask(index)}
