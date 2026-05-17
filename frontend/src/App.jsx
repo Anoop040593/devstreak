@@ -6,11 +6,13 @@ function App() {
   const [tasks, setTasks] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [streakStatus, setStreakStatus] = useState(false);
-  const [totalTasks, setTotalTasks] = useState(0);
-  const [completedTasks, setCompletedTasks] = useState(0);
-  const [pendingTasks, setPendingTasks] = useState(0);
+  const [totalTasksCount, setTotalTasksCount] = useState(0);
+  const [completedTasksCount, setCompletedTasksCount] = useState(0);
+  const [pendingTasksCount, setPendingTasksCount] = useState(0);
   const [editValue, setEditValue] = useState("");
   const [editIndex, setEditIndex] = useState(null);
+  const [filter, setFilter] = useState("all");
+  const [filteredTasks, setFilteredTasks] = useState([]);
 
   async function fetchMessage() {
     try {
@@ -70,7 +72,7 @@ function App() {
 
   function editTaskFunc(index, task) {
     if (editIndex !== index) {
-      console.log("EDITED");
+      //"the clicked task is NOT the currently editing task"
       setEditValue(task.text);
       setEditIndex(index);
     } else {
@@ -101,11 +103,18 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
-    setCompletedTasks(tasks.filter((task) => task.completed).length);
-    setPendingTasks(tasks.filter((task) => !task.completed).length);
-    setTotalTasks(tasks.length);
+    setCompletedTasksCount(tasks.filter((task) => task.completed).length);
+    setPendingTasksCount(tasks.filter((task) => !task.completed).length);
+    setTotalTasksCount(tasks.length);
     setStreakStatus(tasks.some((task) => task.completed));
-  }, [tasks]);
+    if (filter === "all") {
+      setFilteredTasks(tasks);
+    } else if (filter === "completed") {
+      setFilteredTasks(tasks.filter((t) => t.completed));
+    } else {
+      setFilteredTasks(tasks.filter((t) => !t.completed));
+    }
+  }, [tasks, filter]);
 
   return (
     <>
@@ -120,8 +129,20 @@ function App() {
         Add Task
       </button>
       <h3>Task List </h3>
+      <input type="button" value=" ALL " onClick={() => setFilter("all")} />
+      <input
+        type="button"
+        value=" COMPLETED "
+        onClick={() => setFilter("completed")}
+      />
+      <input
+        type="button"
+        value=" PENDING "
+        onClick={() => setFilter("pending")}
+      />
+
       <ul>
-        {tasks.map((t, index) => (
+        {filteredTasks.map((t, index) => (
           <li key={index}>
             <span
               style={{ textDecoration: t.completed ? "line-through" : "none" }}
@@ -169,9 +190,9 @@ function App() {
           ))
         )}
       </h3>
-      <h4>Total Tasks: {totalTasks}</h4>
-      <h4>Completed Tasks: {completedTasks}</h4>
-      <h4>Pending Tasks: {pendingTasks}</h4>
+      <h4>Total Tasks: {totalTasksCount}</h4>
+      <h4>Completed Tasks: {completedTasksCount}</h4>
+      <h4>Pending Tasks: {pendingTasksCount}</h4>
       <h4>{streakStatus ? "🔥 Streak Active" : "No Active Streak"}</h4>
     </>
   );
