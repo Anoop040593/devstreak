@@ -10,10 +10,9 @@ function App() {
   const [completedTasksCount, setCompletedTasksCount] = useState(0);
   const [pendingTasksCount, setPendingTasksCount] = useState(0);
   const [editValue, setEditValue] = useState("");
-  const [editIndex, setEditIndex] = useState(null);
+  const [edtiId, setEditId] = useState(null);
   const [filter, setFilter] = useState("all");
-  const [filteredTasks, setFilteredTasks] = useState([]);
-
+  let filteredTasks = [];
   async function fetchMessage() {
     try {
       setLoading(true);
@@ -43,16 +42,16 @@ function App() {
     if (!trimmed) return;
 
     setTasks((prev) => {
-      return [...prev, { text: trimmed, completed: false }];
+      return [...prev, { id: Date.now(), text: trimmed, completed: false }];
     });
 
     setInputValue("");
   }
 
-  function toggleTask(index) {
+  function toggleTask(id) {
     setTasks((prev) => {
-      return prev.map((task, i) => {
-        if (i === index) {
+      return prev.map((task) => {
+        if (task.id === id) {
           return {
             ...task,
             completed: !task.completed,
@@ -64,21 +63,21 @@ function App() {
     });
   }
 
-  function deleteTask(index) {
+  function deleteTask(id) {
     setTasks((prev) => {
-      return prev.filter((_, i) => i !== index);
+      return prev.filter((task) => task.id !== id);
     });
   }
 
   function editTaskFunc(index, task) {
-    if (editIndex !== index) {
+    if (edtiId !== index) {
       //"the clicked task is NOT the currently editing task"
       setEditValue(task.text);
-      setEditIndex(index);
+      setEditId(index);
     } else {
       setTasks((prev) => {
-        return prev.map((task, i) => {
-          if (i === editIndex) {
+        return prev.map((task) => {
+          if (task.id === edtiId) {
             return {
               ...task,
               text: editValue,
@@ -88,7 +87,7 @@ function App() {
           }
         });
       });
-      setEditIndex(null);
+      setEditId(null);
       setEditValue("");
     }
   }
@@ -107,15 +106,14 @@ function App() {
     setPendingTasksCount(tasks.filter((task) => !task.completed).length);
     setTotalTasksCount(tasks.length);
     setStreakStatus(tasks.some((task) => task.completed));
-    if (filter === "all") {
-      setFilteredTasks(tasks);
-    } else if (filter === "completed") {
-      setFilteredTasks(tasks.filter((t) => t.completed));
-    } else {
-      setFilteredTasks(tasks.filter((t) => !t.completed));
-    }
-  }, [tasks, filter]);
-
+  }, [tasks]);
+  if (filter === "all") {
+    filteredTasks = tasks;
+  } else if (filter === "completed") {
+    filteredTasks = tasks.filter((t) => t.completed);
+  } else {
+    filteredTasks = tasks.filter((t) => !t.completed);
+  }
   return (
     <>
       <h1>DevStreak Dashboard</h1>
@@ -142,12 +140,12 @@ function App() {
       />
 
       <ul>
-        {filteredTasks.map((t, index) => (
-          <li key={index}>
+        {filteredTasks.map((t) => (
+          <li key={t.id}>
             <span
               style={{ textDecoration: t.completed ? "line-through" : "none" }}
             >
-              {index === editIndex ? (
+              {t.id === edtiId ? (
                 <input
                   type="text"
                   value={editValue}
@@ -160,25 +158,25 @@ function App() {
             <input
               type="checkbox"
               checked={t.completed}
-              onChange={() => toggleTask(index)}
+              onChange={() => toggleTask(t.id)}
             />
             <label htmlFor="completed"> Completed</label>
             <input
               type="button"
-              onClick={() => editTaskFunc(index, t)}
-              value={index === editIndex ? " SAVE " : " EDIT "}
+              onClick={() => editTaskFunc(t.id, t)}
+              value={t.id === edtiId ? " SAVE " : " EDIT "}
               style={{ marginLeft: "5px" }}
             />
             <input
               type="button"
-              onClick={() => deleteTask(index)}
+              onClick={() => deleteTask(t.id)}
               value=" DELETE "
               style={{ marginLeft: "5px" }}
             />
           </li>
         ))}
       </ul>
-      <button onClick={fetchMessage}>Refresh Message</button>
+      {/* <button onClick={fetchMessage}>Refresh Message</button>
       <h3>
         {loading ? (
           <span>Loading...</span>
@@ -189,7 +187,7 @@ function App() {
             </div>
           ))
         )}
-      </h3>
+      </h3> */}
       <h4>Total Tasks: {totalTasksCount}</h4>
       <h4>Completed Tasks: {completedTasksCount}</h4>
       <h4>Pending Tasks: {pendingTasksCount}</h4>
