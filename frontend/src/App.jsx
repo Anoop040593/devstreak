@@ -13,6 +13,7 @@ function App() {
   const [editId, setEditId] = useState(null);
   const [filter, setFilter] = useState("all");
   let filteredTasks = [];
+
   async function fetchMessage() {
     try {
       setLoading(true);
@@ -42,7 +43,15 @@ function App() {
     if (!trimmed) return;
 
     setTasks((prev) => {
-      return [...prev, { id: Date.now(), text: trimmed, completed: false }];
+      return [
+        ...prev,
+        {
+          id: Date.now(),
+          text: trimmed,
+          completed: false,
+          createdAt: new Date().toISOString(),
+        },
+      ];
     });
 
     setInputValue("");
@@ -90,6 +99,11 @@ function App() {
       setEditId(null);
       setEditValue("");
     }
+  }
+
+  function cancelSave() {
+    setEditId(null);
+    setEditValue("");
   }
 
   function clearCompleted() {
@@ -172,6 +186,12 @@ function App() {
                 t.text
               )}
             </span>
+            <p>
+              Created at:{" "}
+              {t.createdAt
+                ? new Date(t.createdAt).toLocaleDateString()
+                : "Unknown"}
+            </p>
             <input
               type="checkbox"
               checked={t.completed}
@@ -183,7 +203,16 @@ function App() {
               onClick={() => editTaskFunc(t.id, t)}
               value={t.id === editId ? " SAVE " : " EDIT "}
               style={{ marginLeft: "5px" }}
+              disabled={editValue.trim() === t.text.trim()}
             />
+            {t.id === editId && (
+              <input
+                type="button"
+                onClick={cancelSave}
+                value="Cancel"
+                style={{ marginLeft: "5px" }}
+              />
+            )}
             <input
               type="button"
               onClick={() => deleteTask(t.id)}
