@@ -1,5 +1,9 @@
 import "./App.css";
 import { useEffect, useState } from "react";
+import TaskInput from "./components/TaskInput";
+import TaskFilters from "./components/TaskFilters";
+import TaskList from "./components/TaskList";
+import DashboardStats from "./components/DashboardStats";
 function App() {
   const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -142,86 +146,26 @@ function App() {
   return (
     <>
       <h1>DevStreak Dashboard</h1>
-      <input
-        type="text"
-        id="task"
-        value={inputValue}
-        onChange={handleTaskChange}
-        onKeyDown={(e) => {
-          if (e.key === "Enter") {
-            addTask();
-          }
-        }}
+      <TaskInput
+        addTask={addTask}
+        handleTaskChange={handleTaskChange}
+        inputValue={inputValue}
       />
-      <button onClick={addTask} disabled={!inputValue}>
-        Add Task
-      </button>
       <h3>Task List </h3>
 
-      <input type="button" value=" ALL " onClick={() => setFilter("all")} />
-      <input
-        type="button"
-        value=" COMPLETED "
-        onClick={() => setFilter("completed")}
-      />
-      <input
-        type="button"
-        value=" PENDING "
-        onClick={() => setFilter("pending")}
-      />
+      <TaskFilters setFilter={setFilter} />
       {filteredTasks?.length === 0 && <p>No tasks found</p>}
-      <ul>
-        {filteredTasks?.map((t) => (
-          <li key={t.id}>
-            <span
-              style={{ textDecoration: t.completed ? "line-through" : "none" }}
-            >
-              {t.id === editId ? (
-                <input
-                  type="text"
-                  value={editValue}
-                  onChange={handleEditChange}
-                />
-              ) : (
-                t.text
-              )}
-            </span>
-            <p>
-              Created at:{" "}
-              {t.createdAt
-                ? new Date(t.createdAt).toLocaleDateString()
-                : "Unknown"}
-            </p>
-            <input
-              type="checkbox"
-              checked={t.completed}
-              onChange={() => toggleTask(t.id)}
-            />
-            <label htmlFor="completed"> Completed</label>
-            <input
-              type="button"
-              onClick={() => editTaskFunc(t.id, t)}
-              value={t.id === editId ? " SAVE " : " EDIT "}
-              style={{ marginLeft: "5px" }}
-              disabled={editValue.trim() === t.text.trim()}
-            />
-            {t.id === editId && (
-              <input
-                type="button"
-                onClick={cancelSave}
-                value="Cancel"
-                style={{ marginLeft: "5px" }}
-              />
-            )}
-            <input
-              type="button"
-              onClick={() => deleteTask(t.id)}
-              value=" DELETE "
-              style={{ marginLeft: "5px" }}
-            />
-          </li>
-        ))}
-      </ul>
+
+      <TaskList
+        filteredTasks={filteredTasks}
+        toggleTask={toggleTask}
+        editValue={editValue}
+        handleEditChange={handleEditChange}
+        editTaskFunc={editTaskFunc}
+        cancelSave={cancelSave}
+        deleteTask={deleteTask}
+        editId={editId}
+      />
       <input
         type="button"
         onClick={clearCompleted}
@@ -240,10 +184,12 @@ function App() {
           ))
         )}
       </h3> */}
-      <h4>Total Tasks: {totalTasksCount}</h4>
-      <h4>Completed Tasks: {completedTasksCount}</h4>
-      <h4>Pending Tasks: {pendingTasksCount}</h4>
-      <h4>{streakStatus ? "🔥 Streak Active" : "No Active Streak"}</h4>
+      <DashboardStats
+        totalTasksCount={totalTasksCount}
+        completedTasksCount={completedTasksCount}
+        pendingTasksCount={pendingTasksCount}
+        streakStatus={streakStatus}
+      />
     </>
   );
 }
