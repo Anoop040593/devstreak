@@ -4,20 +4,23 @@ import TaskInput from "./components/TaskInput";
 import TaskFilters from "./components/TaskFilters";
 import TaskList from "./components/TaskList";
 import DashboardStats from "./components/DashboardStats";
+import ClearCompleted from "./components/clearCompleted";
 function App() {
   const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(false);
   const [tasks, setTasks] = useState([]);
   const [inputValue, setInputValue] = useState("");
-  const [streakStatus, setStreakStatus] = useState(false);
-  const [totalTasksCount, setTotalTasksCount] = useState(0);
-  const [completedTasksCount, setCompletedTasksCount] = useState(0);
-  const [pendingTasksCount, setPendingTasksCount] = useState(0);
+  // const [streakStatus, setStreakStatus] = useState(false); //can be derived
+  // const [totalTasksCount, setTotalTasksCount] = useState(0); //can be derived
+  // const [completedTasksCount, setCompletedTasksCount] = useState(0); //can be derived
+  // const [pendingTasksCount, setPendingTasksCount] = useState(0); //can be derived
   const [editValue, setEditValue] = useState("");
   const [editId, setEditId] = useState(null);
   const [filter, setFilter] = useState("all");
-  let filteredTasks = [];
-
+  const completedTasksCount = tasks?.filter((task) => task.completed).length;
+  const pendingTasksCount = tasks?.filter((task) => !task.completed).length;
+  const totalTasksCount = tasks?.length;
+  const streakStatus = tasks?.some((task) => task.completed);
   async function fetchMessage() {
     try {
       setLoading(true);
@@ -131,18 +134,21 @@ function App() {
 
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
-    setCompletedTasksCount(tasks?.filter((task) => task.completed).length);
-    setPendingTasksCount(tasks?.filter((task) => !task.completed).length);
-    setTotalTasksCount(tasks?.length);
-    setStreakStatus(tasks?.some((task) => task.completed));
   }, [tasks]);
-  if (filter === "all") {
-    filteredTasks = tasks;
-  } else if (filter === "completed") {
-    filteredTasks = tasks.filter((t) => t.completed);
-  } else {
-    filteredTasks = tasks.filter((t) => !t.completed);
-  }
+  // if (filter === "all") {
+  //   filteredTasks = tasks;
+  // } else if (filter === "completed") {
+  //   filteredTasks = tasks.filter((t) => t.completed);
+  // } else {
+  //   filteredTasks = tasks.filter((t) => !t.completed);
+  // }
+
+  const filteredTasks =
+    filter === "all"
+      ? tasks
+      : filter === "completed"
+        ? tasks.filter((t) => t.completed)
+        : tasks.filter((t) => !t.completed);
   return (
     <>
       <h1>DevStreak Dashboard</h1>
@@ -166,12 +172,7 @@ function App() {
         deleteTask={deleteTask}
         editId={editId}
       />
-      <input
-        type="button"
-        onClick={clearCompleted}
-        value="❌ Clear Completed Tasks"
-        style={{ marginLeft: "5px" }}
-      />
+      <ClearCompleted clearCompleted={clearCompleted} />
       {/* <button onClick={fetchMessage}>Refresh Message</button>
       <h3>
         {loading ? (
