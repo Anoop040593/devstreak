@@ -150,8 +150,8 @@ function App() {
         ? tasks.filter((t) => t.completed)
         : tasks.filter((t) => !t.completed);
   return (
-    <>
-      <h1>DevStreak Dashboard</h1>
+    <div className="max-w-4xl mx-auto p-8">
+      <h1 className="text-3xl font-bold">DevStreak Dashboard</h1>
       <TaskInput
         addTask={addTask}
         handleTaskChange={handleTaskChange}
@@ -191,7 +191,7 @@ function App() {
         pendingTasksCount={pendingTasksCount}
         streakStatus={streakStatus}
       />
-    </>
+    </div>
   );
 }
 
