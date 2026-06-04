@@ -12,7 +12,7 @@ function TaskItem({
 }) {
   return (
     <div>
-      <li>
+      <li className="border rounded-lg p-4 my-2">
         <span
           style={{ textDecoration: task.completed ? "line-through" : "none" }}
         >

@@ -7,11 +7,19 @@ function DashboardStats({
   streakStatus,
 }) {
   return (
-    <div>
-      <h4>Total Tasks: {totalTasksCount}</h4>
-      <h4>Completed Tasks: {completedTasksCount}</h4>
-      <h4>Pending Tasks: {pendingTasksCount}</h4>
-      <h4>{streakStatus ? "🔥 Streak Active" : "No Active Streak"}</h4>
+    <div className="grid grid-cols-4 gap-4">
+      <div className="border rounded-lg p-4">
+        Total Tasks: {totalTasksCount}
+      </div>
+      <div className="border rounded-lg p-4">
+        Completed Tasks: {completedTasksCount}
+      </div>
+      <div className="border rounded-lg p-4">
+        Pending Tasks: {pendingTasksCount}
+      </div>
+      <div className="border rounded-lg p-4">
+        {streakStatus ? "🔥 Streak Active" : "No Active Streak"}
+      </div>
     </div>
   );
 }
