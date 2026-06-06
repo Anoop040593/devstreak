@@ -8,7 +8,16 @@ import ClearCompleted from "./components/clearCompleted";
 function App() {
   const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(false);
-  const [tasks, setTasks] = useState([]);
+  const [tasks, setTasks] = useState(() => {
+    try {
+      const storedTasks = localStorage.getItem("tasks");
+      return storedTasks ? JSON.parse(storedTasks) : [];
+    } catch (err) {
+      console.error("Invalid localStorage data");
+      localStorage.removeItem("tasks");
+      return [];
+    }
+  });
   const [inputValue, setInputValue] = useState("");
   // const [streakStatus, setStreakStatus] = useState(false); //can be derived
   // const [totalTasksCount, setTotalTasksCount] = useState(0); //can be derived
@@ -121,15 +130,6 @@ function App() {
 
   useEffect(() => {
     fetchMessage();
-    try {
-      const storedTasks = localStorage.getItem("tasks");
-      if (storedTasks) {
-        setTasks(JSON.parse(storedTasks));
-      }
-    } catch (err) {
-      console.error("Invalid localStorage data");
-      localStorage.removeItem("tasks");
-    }
   }, []);
 
   useEffect(() => {
@@ -159,7 +159,7 @@ function App() {
       />
       <h3>Task List </h3>
 
-      <TaskFilters setFilter={setFilter} />
+      <TaskFilters filter={filter} setFilter={setFilter} />
       {filteredTasks?.length === 0 && <p>No tasks found</p>}
 
       <TaskList
