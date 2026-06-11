@@ -24,7 +24,7 @@ function DashboardStats({
             : "border rounded-xl p-4 shadow-md"
         }
       >
-        {streakStatus ? "🔥 Streak Active" : "No Active Streak"}
+        {streakStatus ? "🔥 Streak Active" : "Current Streak: 0 Days"}
       </div>
     </div>
   );

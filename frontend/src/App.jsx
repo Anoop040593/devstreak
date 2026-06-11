@@ -19,10 +19,6 @@ function App() {
     }
   });
   const [inputValue, setInputValue] = useState("");
-  // const [streakStatus, setStreakStatus] = useState(false); //can be derived
-  // const [totalTasksCount, setTotalTasksCount] = useState(0); //can be derived
-  // const [completedTasksCount, setCompletedTasksCount] = useState(0); //can be derived
-  // const [pendingTasksCount, setPendingTasksCount] = useState(0); //can be derived
   const [editValue, setEditValue] = useState("");
   const [editId, setEditId] = useState(null);
   const [filter, setFilter] = useState("all");
@@ -30,6 +26,7 @@ function App() {
   const pendingTasksCount = tasks?.filter((task) => !task.completed).length;
   const totalTasksCount = tasks?.length;
   const streakStatus = tasks?.some((task) => task.completed);
+
   async function fetchMessage() {
     try {
       setLoading(true);
@@ -135,13 +132,6 @@ function App() {
   useEffect(() => {
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
-  // if (filter === "all") {
-  //   filteredTasks = tasks;
-  // } else if (filter === "completed") {
-  //   filteredTasks = tasks.filter((t) => t.completed);
-  // } else {
-  //   filteredTasks = tasks.filter((t) => !t.completed);
-  // }
 
   const filteredTasks =
     filter === "all"
@@ -160,7 +150,14 @@ function App() {
       <h3>Task List </h3>
 
       <TaskFilters filter={filter} setFilter={setFilter} />
-      {filteredTasks?.length === 0 && <p>No tasks found</p>}
+      {filteredTasks?.length === 0 && (
+        <p>
+          <div className="border rounded-xl m-4 shadow-md">
+            📝 No tasks yet <br />
+            Create your first task to start your streak
+          </div>{" "}
+        </p>
+      )}
 
       <TaskList
         filteredTasks={filteredTasks}
@@ -172,19 +169,9 @@ function App() {
         deleteTask={deleteTask}
         editId={editId}
       />
-      <ClearCompleted clearCompleted={clearCompleted} />
-      {/* <button onClick={fetchMessage}>Refresh Message</button>
-      <h3>
-        {loading ? (
-          <span>Loading...</span>
-        ) : (
-          message.map((m, index) => (
-            <div key={index}>
-              {m.text}- {new Date(m.time).toLocaleTimeString()}
-            </div>
-          ))
-        )}
-      </h3> */}
+      {completedTasksCount > 0 && (
+        <ClearCompleted clearCompleted={clearCompleted} />
+      )}
       <DashboardStats
         totalTasksCount={totalTasksCount}
         completedTasksCount={completedTasksCount}
