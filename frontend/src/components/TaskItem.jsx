@@ -25,9 +25,19 @@ function TaskItem({
         <p>
           Created at:{" "}
           {task.createdAt
-            ? new Date(task.createdAt).toLocaleDateString()
+            ? new Date(task.createdAt).toLocaleString("en-GB", {
+                hour12: false,
+              })
             : "Unknown"}
         </p>
+        {task.updatedAt && (
+          <p>
+            Updated At:{" "}
+            {new Date(task.updatedAt).toLocaleString("en-GB", {
+              hour12: false,
+            })}
+          </p>
+        )}
         <input
           type="checkbox"
           checked={task.completed}

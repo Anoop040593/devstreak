@@ -103,6 +103,7 @@ function App() {
             return {
               ...task,
               text: editValue,
+              updatedAt: new Date().toISOString(),
             };
           } else {
             return task;
