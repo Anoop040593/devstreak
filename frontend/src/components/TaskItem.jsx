@@ -48,6 +48,11 @@ function TaskItem({
           type="button"
           onClick={() => editTaskFunc(task.id, task)}
           value={task.id === editId ? " SAVE " : " EDIT "}
+          className={
+            task.id === editId
+              ? "bg-blue-500 text-white px-4 py-2 rounded-lg ml-2 cursor-pointer hover:bg-blue-700"
+              : "bg-gray-600 text-white px-4 py-2 rounded-lg ml-2 cursor-pointer hover:bg-gray-700"
+          }
           style={{ marginLeft: "5px" }}
           disabled={editValue.trim() === task.text.trim()}
         />
@@ -57,6 +62,7 @@ function TaskItem({
             onClick={cancelSave}
             value="Cancel"
             style={{ marginLeft: "5px" }}
+            className="bg-gray-500 text-white px-4 py-2 rounded-lg ml-2 cursor-pointer hover:bg-gray-700"
           />
         )}
         <input
@@ -64,6 +70,7 @@ function TaskItem({
           onClick={() => deleteTask(task.id)}
           value=" DELETE "
           style={{ marginLeft: "5px" }}
+          className="bg-red-500 text-white px-4 py-2 rounded-lg ml-2 cursor-pointer hover:bg-red-700"
         />
       </li>
     </div>
