@@ -22,7 +22,7 @@ function TaskItem({
             task.text
           )}
         </span>
-        <p>
+        <p className="py-1">
           Created at:{" "}
           {task.createdAt
             ? new Date(task.createdAt).toLocaleString("en-GB", {
@@ -31,9 +31,17 @@ function TaskItem({
             : "Unknown"}
         </p>
         {task.updatedAt && (
-          <p>
+          <p className="py-1">
             Updated At:{" "}
             {new Date(task.updatedAt).toLocaleString("en-GB", {
+              hour12: false,
+            })}
+          </p>
+        )}
+        {task.completedAt && task.completed && (
+          <p className="py-1">
+            Completed At:{" "}
+            {new Date(task.completedAt).toLocaleString("en-GB", {
               hour12: false,
             })}
           </p>
@@ -44,18 +52,20 @@ function TaskItem({
           onChange={() => toggleTask(task.id)}
         />
         <label htmlFor="completed"> Completed</label>
-        <input
-          type="button"
-          onClick={() => editTaskFunc(task.id, task)}
-          value={task.id === editId ? " SAVE " : " EDIT "}
-          className={
-            task.id === editId
-              ? "bg-blue-500 text-white px-4 py-2 rounded-lg ml-2 cursor-pointer hover:bg-blue-700"
-              : "bg-gray-600 text-white px-4 py-2 rounded-lg ml-2 cursor-pointer hover:bg-gray-700"
-          }
-          style={{ marginLeft: "5px" }}
-          disabled={editValue.trim() === task.text.trim()}
-        />
+        {!task.completed && (
+          <input
+            type="button"
+            onClick={() => editTaskFunc(task.id, task)}
+            value={task.id === editId ? " SAVE " : " EDIT "}
+            className={
+              task.id === editId
+                ? "bg-blue-500 text-white px-4 py-2 rounded-lg ml-2 cursor-pointer hover:bg-blue-700"
+                : "bg-gray-600 text-white px-4 py-2 rounded-lg ml-2 cursor-pointer hover:bg-gray-700"
+            }
+            style={{ marginLeft: "5px" }}
+            disabled={editValue.trim() === task.text.trim()}
+          />
+        )}
         {task.id === editId && (
           <input
             type="button"
