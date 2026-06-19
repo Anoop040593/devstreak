@@ -77,7 +77,7 @@ function App() {
           return {
             ...task,
             completed: !task.completed,
-            completedAt: new Date().toISOString(),
+            completedAt: !task.completed ? new Date().toISOString() : null,
           };
         } else {
           return task;
