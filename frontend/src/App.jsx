@@ -26,6 +26,16 @@ function App() {
   const pendingTasksCount = tasks?.filter((task) => !task.completed).length;
   const totalTasksCount = tasks?.length;
   const streakStatus = tasks?.some((task) => task.completed);
+  let completedDates = tasks
+    ?.filter((t) => t.completedAt !== null)
+    .map((task) => task.completedAt.split("T")[0]);
+
+  const uniqueDates = new Set();
+  for (let i = 0; i < completedDates.length; i++) {
+    uniqueDates.add(completedDates[i]);
+  }
+
+  //.forEach((t, i) => t[i].split("T")[0]);
 
   async function fetchMessage() {
     try {
@@ -180,6 +190,8 @@ function App() {
         pendingTasksCount={pendingTasksCount}
         streakStatus={streakStatus}
       />
+
+      <p>Completed Dates:{uniqueDates}</p>
     </div>
   );
 }
