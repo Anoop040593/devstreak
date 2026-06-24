@@ -28,13 +28,14 @@ function App() {
   const streakStatus = tasks?.some((task) => task.completed);
   let completedDates = tasks
     ?.filter((t) => t.completedAt !== null)
-    .map((task) => task.completedAt.split("T")[0]);
+    .map((task) => task.completedAt?.split("T")[0]);
 
   const uniqueDates = new Set();
+  let uniqueCompletedDates = [];
   for (let i = 0; i < completedDates.length; i++) {
     uniqueDates.add(completedDates[i]);
   }
-
+  uniqueCompletedDates = [...uniqueDates];
   //.forEach((t, i) => t[i].split("T")[0]);
 
   async function fetchMessage() {
@@ -191,7 +192,10 @@ function App() {
         streakStatus={streakStatus}
       />
 
-      <p>Completed Dates:{uniqueDates}</p>
+      <p>
+        Completed Dates:{completedDates} -------- {uniqueDates} -------{" "}
+        {JSON.stringify(uniqueCompletedDates.toReversed())}
+      </p>
     </div>
   );
 }
