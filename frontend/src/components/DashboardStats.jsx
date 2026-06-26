@@ -5,6 +5,8 @@ function DashboardStats({
   completedTasksCount,
   pendingTasksCount,
   streakStatus,
+  streak,
+  setStreak,
 }) {
   return (
     <div className="grid grid-cols-2 gap-4 mt-6">
@@ -24,7 +26,9 @@ function DashboardStats({
             : "border rounded-xl p-4 shadow-md"
         }
       >
-        {streakStatus ? "🔥 Streak Active" : "Current Streak: 0 Days"}
+        {streakStatus
+          ? `Current Streak: ${Number(streak)}`
+          : "Current Streak: 0 Days"}
       </div>
     </div>
   );
