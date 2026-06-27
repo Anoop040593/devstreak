@@ -28,7 +28,7 @@ function App() {
   const totalTasksCount = tasks?.length;
   const streakStatus = tasks?.some((task) => task.completed);
   let completedDates = tasks
-    ?.filter((t) => t.completedAt !== null)
+    ?.filter((t) => t.completedAt)
     .map((task) => streakDate(new Date(task.completedAt)));
 
   const uniqueDates = new Set();
@@ -161,7 +161,7 @@ function App() {
     fetchMessage();
   }, []);
 
-  useEffect(() => {
+  function calculateStreak() {
     let temp = 0;
     let today = new Date();
     let yesterday = new Date();
@@ -170,7 +170,6 @@ function App() {
     yesterday = streakDate(yesterday);
 
     let len = uniqueCompletedDates.length;
-    localStorage.setItem("tasks", JSON.stringify(tasks));
 
     if (len === 0) temp = 0;
     if (len > 0) {
@@ -198,6 +197,11 @@ function App() {
       }
     }
     setStreak(temp);
+  }
+
+  useEffect(() => {
+    calculateStreak();
+    localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
   const filteredTasks =
