@@ -6,7 +6,7 @@ function DashboardStats({
   pendingTasksCount,
   streakStatus,
   streak,
-  setStreak,
+  longestStreak,
 }) {
   return (
     <div className="grid grid-cols-2 gap-4 mt-6">
@@ -29,6 +29,10 @@ function DashboardStats({
         {streakStatus
           ? `Current Streak: ${Number(streak)}`
           : "Current Streak: 0 Days"}
+      </div>
+
+      <div className="border rounded-xl p-4 shadow-md bg-yellow-700">
+        Longest Streak: {longestStreak}
       </div>
     </div>
   );

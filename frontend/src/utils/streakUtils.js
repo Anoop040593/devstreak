@@ -1,15 +1,5 @@
 export function calculateStreak(tasks) {
-  let completedDates = tasks
-    ?.filter((t) => t.completedAt)
-    .map((task) => streakDate(new Date(task.completedAt)));
-
-  const uniqueDates = new Set();
-  let uniqueCompletedDates = [];
-  for (let i = 0; i < completedDates.length; i++) {
-    uniqueDates.add(completedDates[i]);
-  }
-  uniqueCompletedDates = [...uniqueDates].toReversed();
-
+  let uniqueCompletedDates = calculateUniqueCompletedDates(tasks);
   let temp = 0;
   let today = new Date();
   let yesterday = new Date();
@@ -42,6 +32,32 @@ export function calculateStreak(tasks) {
   return temp;
 }
 
+export function calculateLongestStreak(tasks) {
+  let uniqueCompletedDates = calculateUniqueCompletedDates(tasks);
+  let templongestStreak = 1;
+  let longestStreak = 1;
+
+  if (uniqueCompletedDates.length === 0) {
+    return 0;
+  }
+
+  for (let i = 0; i < uniqueCompletedDates.length - 1; i++) {
+    let date1 = new Date(uniqueCompletedDates[i]);
+    let date2 = new Date(uniqueCompletedDates[i + 1]);
+    const diffTime = Math.abs(date1 - date2);
+    const diffDays = Number(diffTime / (1000 * 60 * 60 * 24));
+    if (diffDays === 1) {
+      templongestStreak += 1;
+    } else {
+      longestStreak = Math.max(templongestStreak, longestStreak);
+      templongestStreak = 1;
+      continue;
+    }
+    longestStreak = Math.max(templongestStreak, longestStreak);
+  }
+  return longestStreak;
+}
+
 function streakDate(dateNew) {
   const year = dateNew.getFullYear();
   const month = (dateNew.getMonth() + 1).toString().padStart(2, "0");
@@ -49,4 +65,18 @@ function streakDate(dateNew) {
 
   const properDate = `${year}-${month}-${date}`;
   return properDate;
+}
+
+export function calculateUniqueCompletedDates(tasks) {
+  let completedDates = tasks
+    ?.filter((t) => t.completedAt)
+    .map((task) => streakDate(new Date(task.completedAt)));
+
+  let uniqueDates = new Set();
+
+  for (let i = 0; i < completedDates.length; i++) {
+    uniqueDates.add(completedDates[i]);
+  }
+  let tempuniqueCompletedDates = [...uniqueDates].toReversed();
+  return tempuniqueCompletedDates;
 }

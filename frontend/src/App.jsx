@@ -5,7 +5,7 @@ import TaskFilters from "./components/TaskFilters";
 import TaskList from "./components/TaskList";
 import DashboardStats from "./components/DashboardStats";
 import ClearCompleted from "./components/ClearCompleted";
-import { calculateStreak } from "./utils/streakUtils";
+import { calculateStreak, calculateLongestStreak } from "./utils/streakUtils";
 function App() {
   const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -24,6 +24,7 @@ function App() {
   const [editId, setEditId] = useState(null);
   const [filter, setFilter] = useState("all");
   const [streak, setStreak] = useState(0);
+  const [longestStreak, setLongestStreak] = useState(0);
   const completedTasksCount = tasks?.filter((task) => task.completed).length;
   const pendingTasksCount = tasks?.filter((task) => !task.completed).length;
   const totalTasksCount = tasks?.length;
@@ -139,13 +140,13 @@ function App() {
     });
   }
 
-  useEffect(() => {
-    fetchMessage();
-  }, []);
+  // useEffect(() => {
+  //   fetchMessage();
+  // }, []);
 
   useEffect(() => {
-    let streak = calculateStreak(tasks);
-    setStreak(streak);
+    setLongestStreak(calculateLongestStreak(tasks));
+    setStreak(calculateStreak(tasks));
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
@@ -194,7 +195,7 @@ function App() {
         pendingTasksCount={pendingTasksCount}
         streakStatus={streakStatus}
         streak={streak}
-        setStreak={setStreak}
+        longestStreak={longestStreak}
       />
 
       {/* <p>
