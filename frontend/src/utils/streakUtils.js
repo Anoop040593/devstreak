@@ -1,4 +1,4 @@
-export function calculateStreak(tasks) {
+export function calculateCurrentStreak(tasks) {
   let uniqueCompletedDates = calculateUniqueCompletedDates(tasks);
   let temp = 0;
   let today = new Date();
@@ -34,7 +34,7 @@ export function calculateStreak(tasks) {
 
 export function calculateLongestStreak(tasks) {
   let uniqueCompletedDates = calculateUniqueCompletedDates(tasks);
-  let templongestStreak = 1;
+  let currentStreak = 1;
   let longestStreak = 1;
 
   if (uniqueCompletedDates.length === 0) {
@@ -47,13 +47,13 @@ export function calculateLongestStreak(tasks) {
     const diffTime = Math.abs(date1 - date2);
     const diffDays = Number(diffTime / (1000 * 60 * 60 * 24));
     if (diffDays === 1) {
-      templongestStreak += 1;
+      currentStreak += 1;
     } else {
-      longestStreak = Math.max(templongestStreak, longestStreak);
-      templongestStreak = 1;
+      longestStreak = Math.max(currentStreak, longestStreak);
+      currentStreak = 1;
       continue;
     }
-    longestStreak = Math.max(templongestStreak, longestStreak);
+    longestStreak = Math.max(currentStreak, longestStreak);
   }
   return longestStreak;
 }

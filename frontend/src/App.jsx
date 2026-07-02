@@ -5,7 +5,10 @@ import TaskFilters from "./components/TaskFilters";
 import TaskList from "./components/TaskList";
 import DashboardStats from "./components/DashboardStats";
 import ClearCompleted from "./components/ClearCompleted";
-import { calculateStreak, calculateLongestStreak } from "./utils/streakUtils";
+import {
+  calculateCurrentStreak,
+  calculateLongestStreak,
+} from "./utils/streakUtils";
 function App() {
   const [message, setMessage] = useState([]);
   const [loading, setLoading] = useState(false);
@@ -146,7 +149,7 @@ function App() {
 
   useEffect(() => {
     setLongestStreak(calculateLongestStreak(tasks));
-    setStreak(calculateStreak(tasks));
+    setStreak(calculateCurrentStreak(tasks));
     localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
