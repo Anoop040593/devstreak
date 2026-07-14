@@ -2,7 +2,24 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-
+const tasks = [
+  {
+    id: 1,
+    text: "Learn Express",
+    completed: false,
+    createdAt: "2026-07-14T16:00:00.000Z",
+    completedAt: null,
+    updatedAt: null,
+  },
+  {
+    id: 2,
+    text: "Finish DevStreak backend",
+    completed: true,
+    createdAt: "2026-07-13T16:00:00.000Z",
+    completedAt: "2026-07-14T10:30:00.000Z",
+    updatedAt: null,
+  },
+];
 app.use(express.json());
 
 app.use(
@@ -20,6 +37,13 @@ app.get("/api/message", (req, res) => {
     success: true,
     message: "Received Response",
     time: Date.now(),
+  });
+});
+
+app.get("/api/tasks", (req, res) => {
+  return res.status(200).json({
+    success: true,
+    data: tasks,
   });
 });
 

@@ -10,18 +10,7 @@ import {
   calculateLongestStreak,
 } from "./utils/streakUtils";
 function App() {
-  const [message, setMessage] = useState([]);
-  const [loading, setLoading] = useState(false);
-  const [tasks, setTasks] = useState(() => {
-    try {
-      const storedTasks = localStorage.getItem("tasks");
-      return storedTasks ? JSON.parse(storedTasks) : [];
-    } catch (err) {
-      console.error("Invalid localStorage data");
-      localStorage.removeItem("tasks");
-      return [];
-    }
-  });
+  const [tasks, setTasks] = useState([]);
   const [inputValue, setInputValue] = useState("");
   const [editValue, setEditValue] = useState("");
   const [editId, setEditId] = useState(null);
@@ -32,20 +21,14 @@ function App() {
   const pendingTasksCount = tasks?.filter((task) => !task.completed).length;
   const totalTasksCount = tasks?.length;
   const streakStatus = tasks?.some((task) => task.completed);
-
-  async function fetchMessage() {
+  async function fetchTasks() {
     try {
-      setLoading(true);
-      const response = await fetch("http://localhost:3000/api/message");
+      const response = await fetch("http://localhost:3000/api/tasks");
       const messageData = await response.json();
-      const { message, time } = messageData;
-      setMessage((prev) => {
-        return [...prev, { text: message, time: time, completed: false }];
-      });
+      setTasks(messageData);
     } catch (err) {
       console.error("Error Occured", err);
     } finally {
-      setLoading(false);
     }
   }
   function properDate(dateNew) {
@@ -143,14 +126,13 @@ function App() {
     });
   }
 
-  // useEffect(() => {
-  //   fetchMessage();
-  // }, []);
+  useEffect(() => {
+    fetchTasks();
+  }, []);
 
   useEffect(() => {
     setLongestStreak(calculateLongestStreak(tasks));
     setStreak(calculateCurrentStreak(tasks));
-    localStorage.setItem("tasks", JSON.stringify(tasks));
   }, [tasks]);
 
   const filteredTasks =
