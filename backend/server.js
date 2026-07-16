@@ -2,7 +2,8 @@ const express = require("express");
 const cors = require("cors");
 
 const app = express();
-const tasks = [
+
+let tasks = [
   {
     id: 1,
     text: "Learn Express",
@@ -32,18 +33,29 @@ app.get("/health", (req, res) => {
   res.send("Server is running!");
 });
 
-app.get("/api/message", (req, res) => {
-  return res.status(200).json({
-    success: true,
-    message: "Received Response",
-    time: Date.now(),
-  });
-});
-
 app.get("/api/tasks", (req, res) => {
   return res.status(200).json({
     success: true,
     data: tasks,
+  });
+});
+
+app.post("/api/tasks", (req, res) => {
+  const task = req.body;
+  const newTask = {
+    id: tasks.length + 1,
+    text: task.text,
+    completed: false,
+    createdAt: new Date().toISOString(),
+    completedAt: null,
+    updatedAt: null,
+  };
+
+  tasks = [newTask, ...tasks];
+
+  return res.status(201).json({
+    success: true,
+    data: newTask,
   });
 });
 

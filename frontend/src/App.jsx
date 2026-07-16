@@ -24,22 +24,12 @@ function App() {
   async function fetchTasks() {
     try {
       const response = await fetch("http://localhost:3000/api/tasks");
-      const messageData = await response.json();
-      setTasks(messageData);
+      const taskData = await response.json();
+      setTasks(taskData.data);
     } catch (err) {
       console.error("Error Occured", err);
     } finally {
     }
-  }
-  function properDate(dateNew) {
-    const year = dateNew.getFullYear();
-    const month = (dateNew.getMonth() + 1).toString().padStart(2, "0");
-    const date = dateNew.getDate().toString().padStart(2, "0");
-    const hours = dateNew.getHours().toString().padStart(2, "0");
-    const mins = dateNew.getMinutes().toString().padStart(2, "0");
-    const secs = dateNew.getSeconds().toString().padStart(2, "0");
-    const properDate = `${year}-${month}-${date} ${hours}:${mins}:${secs}`;
-    return properDate;
   }
 
   function handleTaskChange(e) {
@@ -50,20 +40,23 @@ function App() {
     setEditValue(e.target.value);
   }
 
-  function addTask() {
+  async function addTask() {
     const trimmed = inputValue.trim();
     if (!trimmed) return;
-
+    const response = await fetch("http://localhost:3000/api/tasks", {
+      method: "POST",
+      headers: { "Content-Type": "application/json" },
+      body: JSON.stringify({
+        text: trimmed,
+      }),
+    });
+    if (!response.ok) {
+      console.error("Failed to create task");
+      return;
+    }
+    const addedTaskData = await response.json();
     setTasks((prev) => {
-      return [
-        ...prev,
-        {
-          id: Date.now(),
-          text: trimmed,
-          completed: false,
-          createdAt: new Date().toISOString(),
-        },
-      ];
+      return [addedTaskData.data, ...prev];
     });
 
     setInputValue("");
