@@ -17,7 +17,7 @@ let tasks = [
     text: "Finish DevStreak backend",
     completed: true,
     createdAt: "2026-07-13T16:00:00.000Z",
-    completedAt: "2026-07-14T10:30:00.000Z",
+    completedAt: "2026-07-29T10:30:00.000Z",
     updatedAt: null,
   },
 ];

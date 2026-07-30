@@ -77,6 +77,6 @@ export function calculateUniqueCompletedDates(tasks) {
   for (let i = 0; i < completedDates.length; i++) {
     uniqueDates.add(completedDates[i]);
   }
-  let tempuniqueCompletedDates = [...uniqueDates].toReversed();
+  let tempuniqueCompletedDates = [...uniqueDates];
   return tempuniqueCompletedDates;
 }
