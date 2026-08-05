@@ -59,6 +59,34 @@ app.post("/api/tasks", (req, res) => {
   });
 });
 
+app.patch("/api/tasks/:id", (req, res) => {
+  const { id } = req.params;
+  let newTask;
+  console.log(req.params.id);
+  let foundIndex = tasks.findIndex((x) => x.id == Number(id));
+  if (foundIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Id doesn't match",
+    });
+  }
+  let task = tasks[foundIndex];
+
+  newTask = {
+    ...task,
+    completed: true,
+    completedAt: new Date().toISOString(),
+    updatedAt: new Date().toISOString(),
+  };
+
+  tasks[foundIndex] = newTask;
+
+  return res.status(200).json({
+    success: true,
+    data: newTask,
+  });
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log("Server is running on", PORT);
