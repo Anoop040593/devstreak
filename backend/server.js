@@ -62,7 +62,6 @@ app.post("/api/tasks", (req, res) => {
 app.patch("/api/tasks/:id", (req, res) => {
   const { id } = req.params;
   let newTask;
-  console.log(req.params.id);
   let foundIndex = tasks.findIndex((x) => x.id == Number(id));
   if (foundIndex === -1) {
     return res.status(404).json({
@@ -74,7 +73,7 @@ app.patch("/api/tasks/:id", (req, res) => {
 
   newTask = {
     ...task,
-    completed: true,
+    completed: !task.completed,
     completedAt: new Date().toISOString(),
     updatedAt: new Date().toISOString(),
   };

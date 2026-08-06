@@ -62,15 +62,20 @@ function App() {
     setInputValue("");
   }
 
-  function toggleTask(id) {
+  async function toggleTask(id) {
+    console.log("toggleTask called", id);
+    const response = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+      method: "PATCH",
+      headers: { "Content-Type": "application/json" },
+    });
+    const updatedTask = await response.json();
+
+    console.log("Task: ", updatedTask);
+
     setTasks((prev) => {
       return prev.map((task) => {
         if (task.id === id) {
-          return {
-            ...task,
-            completed: !task.completed,
-            completedAt: !task.completed ? new Date().toISOString() : null,
-          };
+          return updatedTask.data;
         } else {
           return task;
         }
