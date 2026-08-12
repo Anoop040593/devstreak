@@ -86,6 +86,29 @@ app.patch("/api/tasks/:id", (req, res) => {
   });
 });
 
+app.delete("/api/tasks/:id", (req, res) => {
+  const { id } = req.params;
+  console.log(id);
+  let foundIndex = tasks.findIndex((x) => x.id === Number(id));
+  if (foundIndex === -1) {
+    return res.status(404).json({
+      success: false,
+      message: "Id doesn't match",
+    });
+  }
+
+  let task = tasks[foundIndex];
+
+  let updatedTasks = tasks.filter((t) => t.id !== task.id);
+  tasks = updatedTasks;
+  console.log(updatedTasks);
+
+  return res.status(200).json({
+    success: true,
+    data: updatedTasks,
+  });
+});
+
 const PORT = 3000;
 app.listen(PORT, () => {
   console.log("Server is running on", PORT);
