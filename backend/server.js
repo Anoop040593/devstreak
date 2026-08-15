@@ -61,8 +61,9 @@ app.post("/api/tasks", (req, res) => {
 
 app.patch("/api/tasks/:id", (req, res) => {
   const { id } = req.params;
+  const { text } = req.body;
   let newTask;
-  let foundIndex = tasks.findIndex((x) => x.id == Number(id));
+  let foundIndex = tasks.findIndex((x) => x.id === Number(id));
   if (foundIndex === -1) {
     return res.status(404).json({
       success: false,
@@ -70,14 +71,20 @@ app.patch("/api/tasks/:id", (req, res) => {
     });
   }
   let task = tasks[foundIndex];
-
-  newTask = {
-    ...task,
-    completed: !task.completed,
-    completedAt: new Date().toISOString(),
-    updatedAt: new Date().toISOString(),
-  };
-
+  if (text) {
+    newTask = {
+      ...task,
+      text: text,
+      updatedAt: new Date().toISOString(),
+    };
+  } else {
+    newTask = {
+      ...task,
+      completed: !task.completed,
+      completedAt: new Date().toISOString(),
+      updatedAt: new Date().toISOString(),
+    };
+  }
   tasks[foundIndex] = newTask;
 
   return res.status(200).json({

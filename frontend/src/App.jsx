@@ -63,7 +63,6 @@ function App() {
   }
 
   async function toggleTask(id) {
-    console.log("toggleTask called", id);
     const response = await fetch(`http://localhost:3000/api/tasks/${id}`, {
       method: "PATCH",
       headers: { "Content-Type": "application/json" },
@@ -83,10 +82,20 @@ function App() {
     });
   }
 
-  function deleteTask(id) {
-    setTasks((prev) => {
-      return prev.filter((task) => task.id !== id);
+  async function deleteTask(id) {
+    // setTasks((prev) => {
+    //   return prev.filter((task) => task.id !== id);
+    // });
+
+    const response = await fetch(`http://localhost:3000/api/tasks/${id}`, {
+      method: "DELETE",
+      headers: { "Content-Type": "application/json" },
     });
+
+    const updatedTasks = await response.json();
+    console.log(updatedTasks);
+
+    setTasks(updatedTasks.data);
   }
 
   function editTaskFunc(index, task) {
