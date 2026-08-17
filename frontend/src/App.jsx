@@ -98,20 +98,27 @@ function App() {
     setTasks(updatedTasks.data);
   }
 
-  function editTaskFunc(index, task) {
+  async function editTaskFunc(index, task) {
     if (editId !== index) {
-      //"the clicked task is NOT the currently editing task"
+      //"the clicked task is NOT the currently editing task, meaning not yet in edit mode."
       setEditValue(task.text);
       setEditId(index);
     } else {
+      //clicking on save will take you here, because it is in edit mode.
+      const response = await fetch(`http://localhost:3000/api/tasks/${index}`, {
+        method: "PATCH",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          text: editValue,
+        }),
+      });
+
+      const updatedTask = await response.json();
+
       setTasks((prev) => {
         return prev.map((task) => {
           if (task.id === editId) {
-            return {
-              ...task,
-              text: editValue,
-              updatedAt: new Date().toISOString(),
-            };
+            return updatedTask.data;
           } else {
             return task;
           }
