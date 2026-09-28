@@ -61,7 +61,7 @@ app.post("/api/tasks", (req, res) => {
 
 app.patch("/api/tasks/:id", (req, res) => {
   const { id } = req.params;
-  const { text } = req.body;
+  const { text } = req.body || {};
   let newTask;
   let foundIndex = tasks.findIndex((x) => x.id === Number(id));
   if (foundIndex === -1) {
