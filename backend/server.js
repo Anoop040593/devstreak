@@ -61,7 +61,8 @@ app.post("/api/tasks", (req, res) => {
 
 app.patch("/api/tasks/:id", (req, res) => {
   const { id } = req.params;
-  const { text } = req.body || {};
+  const body = req.body || {};
+  const { text } = body;
   let newTask;
   let foundIndex = tasks.findIndex((x) => x.id === Number(id));
   if (foundIndex === -1) {
@@ -71,19 +72,29 @@ app.patch("/api/tasks/:id", (req, res) => {
     });
   }
   let task = tasks[foundIndex];
-  if (text) {
+  if ("text" in body) {
+    //this will search if the property text is present in body which is safe alias for req.body
     newTask = {
       ...task,
       text: text,
       updatedAt: new Date().toISOString(),
     };
   } else {
-    newTask = {
-      ...task,
-      completed: !task.completed,
-      completedAt: new Date().toISOString(),
-      updatedAt: new Date().toISOString(),
-    };
+    if (!task.completed) {
+      newTask = {
+        ...task,
+        completed: true,
+        completedAt: new Date().toISOString(),
+        updatedAt: new Date().toISOString(),
+      };
+    } else {
+      newTask = {
+        ...task,
+        completed: false,
+        completedAt: null,
+        updatedAt: new Date().toISOString(),
+      };
+    }
   }
   tasks[foundIndex] = newTask;
 
